@@ -1,0 +1,30 @@
+{
+    "network": "Native",
+    "standard": "Native",
+    "assets": [
+        {
+            "network": "Ethereum",
+            "name": "Ethereum",
+            "symbol": "ETH",
+            "decimals": 18,
+            "coingeckoId": "ethereum",
+            "showByDefault": true
+        },
+        {
+            "network": "BinanceSmartChain",
+            "name": "Binance Smart Chain",
+            "symbol": "BNB",
+            "decimals": 18,
+            "coingeckoId": "binancecoin",
+            "showByDefault": true
+        },
+        {
+            "network": "Solana",
+            "name": "Solana",
+            "symbol": "SOL",
+            "decimals": 9,
+            "coingeckoId": "solana",
+            "showByDefault": true
+        }
+    ]
+}

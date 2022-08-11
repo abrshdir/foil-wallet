@@ -1,0 +1,21 @@
+{
+    "network": "BinanceChain",
+    "standard": "BEP8",
+    "assets": [
+        {
+            "name": "TBCC Token",
+            "symbol": "TBCC-BA1M",
+            "showByDefault": true
+        },
+        {
+            "name": "TBCCVPN",
+            "symbol": "VTBC-C26M",
+            "showByDefault": true
+        },
+        {
+            "name": "TBCC Vote",
+            "symbol": "VOTE-692M",
+            "showByDefault": false
+        }
+    ]
+}

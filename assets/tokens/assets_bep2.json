@@ -1,0 +1,108 @@
+{
+    "network": "BinanceChain",
+    "standard": "BEP2",
+    "assets": [
+        {
+            "address":"0x0000000000000000000000000000000000000000",
+            "name": "Binance Coin",
+            "symbol": "BNB",
+            "coingeckoId": "binancecoin",
+            "showByDefault": true
+        },
+        {
+            "address":"0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+            "name": "Binance USD",
+            "symbol": "BUSD-BD1",
+            "coingeckoId": "binance-usd",
+            "showByDefault": true
+        },
+        {
+            "address":"0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c",
+            "name": "Bitcoin",
+            "symbol": "BTCB-1DE",
+            "coingeckoId": "bitcoin"
+        },
+        {
+            "address":"0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
+            "name": "Ethereum",
+            "symbol": "ETH-1C9",
+            "coingeckoId": "ethereum"
+        },
+        {
+            "address":"0x1D2F0da169ceB9fC7B3144628dB156f3F6c60dBE",
+            "name": "Fantom",
+            "symbol": "FTM-A64",
+            "coingeckoId": "fantom"
+        },
+        {
+            "address":"0x1D2F0da169ceB9fC7B3144628dB156f3F6c60dBE",
+            "name": "Ripple",
+            "symbol": "XRP-BF2",
+            "coingeckoId": "ripple"
+        },
+        {
+            "address":"0x8fF795a6F4D97E7887C79beA79aba5cc76444aDf",
+            "name": "Bitcoin Cash",
+            "symbol": "BCH-1FD",
+            "coingeckoId": "bitcoin-cash"
+        },
+        {
+            "address":"0x4338665CBB7B2485A8855A139b75D5e34AB0DB94",
+            "name": "Litecoin",
+            "symbol": "LTC-F07",
+            "coingeckoId": "litecoin"
+        },
+        {
+            "name": "Tron",
+            "symbol": "TRXB-2E6",
+            "coingeckoId": "tron"
+        },
+        {
+            "address":"0x55d398326f99059fF775485246999027B3197955",
+            "name": "Tether USD",
+            "symbol": "USDT-6D8",
+            "coingeckoId": "tether"
+        },
+        {
+            "name": "Rune",
+            "symbol": "RUNE-B1A",
+            "coingeckoId": "ravencoin"
+        },
+        {
+            "address":"0x4B0F1812e5Df2A09796481Ff14017e6005508003",
+            "name": "Trust Wallet Token",
+            "symbol": "TWT-8C2",
+            "coingeckoId" : "trust-wallet-token"
+        },
+        {
+            "name": "BitTorrent Token",
+            "symbol": "BTTB-D31",
+            "coingeckoId" : "bittorrent-2"
+        },
+        {
+            "name": "Nexo",
+            "symbol": "NEXO-A84",
+            "coingeckoId" : "nexo"
+        },
+        {
+            "name": "ShareToken",
+            "symbol": "SHR-DB6",
+            "coingeckoId" : "sharering"
+        },
+        {
+            "name": "Atomic Wallet Token",
+            "symbol": "AWC-986",
+            "coingeckoId": "atomic-wallet-coin"
+        },
+        {
+            "name": "Travala.com Token",
+            "symbol": "AVA-645",
+            "coingeckoId" : "concierge-io"
+        },
+        {
+            "name": "CryptoBonusMiles",
+            "symbol": "CBM-4B2",
+            "coingeckoId" : "cryptobonusmiles"
+        }
+    ]
+}
