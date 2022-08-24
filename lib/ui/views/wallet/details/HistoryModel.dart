@@ -48,7 +48,8 @@ class TxHistoryModel extends BaseViewModel {
           txs.add(txInfo);
         }
       }
-    } else if (token.network == TokenNetwork.Ethereum) {
+    }
+    else if (token.network == TokenNetwork.Ethereum) {
       var address = acc.ethWallet.address.hex;
       var apiResp = await locator<ETHApi>().getEthTransactions(
           token.standard == 'ERC20' ? token.ethAddress?.hex : null,
@@ -82,7 +83,8 @@ class TxHistoryModel extends BaseViewModel {
 
         txs.add(txInfo);
       }
-    } else if (token.network == TokenNetwork.BinanceSmartChain) {
+    }
+    else if (token.network == TokenNetwork.BinanceSmartChain) {
       var address = acc.bscWallet.address.hex;
       var apiResp = await locator<BSCApi>().getBSCTransactions(
           token.standard == 'BEP20' ? token.ethAddress?.hex : null,
@@ -116,7 +118,8 @@ class TxHistoryModel extends BaseViewModel {
 
         txs.add(txInfo);
       }
-    } else if (token.network == TokenNetwork.Solana) {
+    }
+    else if (token.network == TokenNetwork.Solana) {
       //var address = acc.solWallet.address;
       //var signatures = await ENVS.SOL_ENV!.client.request('getSignaturesForAddress', params: [address]);
       //var ts = [for (var s in signatures['result']) TransactionSignature(s['signature'])];

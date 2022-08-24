@@ -33,8 +33,7 @@ class WalletMainScreen extends StatefulWidget {
   _WalletMainScreenState createState() => _WalletMainScreenState();
 }
 
-class _WalletMainScreenState extends State<WalletMainScreen>
-    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+class _WalletMainScreenState extends State<WalletMainScreen> with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   final ScrollController scrollController = ScrollController();
 
   @override
@@ -44,6 +43,7 @@ class _WalletMainScreenState extends State<WalletMainScreen>
 
   @override
   bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -55,8 +55,7 @@ class _WalletMainScreenState extends State<WalletMainScreen>
         try {
           inited = model.accManager.allAccounts.first.allBalances.isNotEmpty;
         } catch (e) {}
-        if (!inited && model.state != ViewState.Busy)
-          await model.loadBalances();
+        if (!inited && model.state != ViewState.Busy) await model.loadBalances();
       },
       builder: (context, model, _) => Scaffold(
         body: ChangeNotifierProvider.value(
@@ -74,13 +73,11 @@ class _WalletMainScreenState extends State<WalletMainScreen>
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          PremiumWidget(
-                              acc: model.accManager, state: model.state),
+                          PremiumWidget(acc: model.accManager, state: model.state),
                           SizedBox(width: 12),
                           NotificationWidget(
                             isNewNotification: true,
@@ -92,18 +89,15 @@ class _WalletMainScreenState extends State<WalletMainScreen>
                     BlockchainConnectionState(),
                     Expanded(
                       child: NestedScrollView(
-                        headerSliverBuilder:
-                            (BuildContext context, bool innerBoxIsScrolled) {
+                        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
                           return [
                             SliverAppBar(
                                 pinned: false,
-                                toolbarHeight:
-                                    MediaQuery.of(context).size.height * 0.31,
+                                toolbarHeight: MediaQuery.of(context).size.height * 0.31,
                                 flexibleSpace: FlexibleSpaceBar(
                                   collapseMode: CollapseMode.pin,
                                   background: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16),
+                                    padding: const EdgeInsets.symmetric(horizontal: 16),
                                     child: Column(
                                       children: [
                                         AnimatedButtonBar([
@@ -113,8 +107,7 @@ class _WalletMainScreenState extends State<WalletMainScreen>
                                               style: 0 == model.barValue
                                                   ? tt.bodyText2
                                                   : tt.bodyText1!.copyWith(
-                                                      color: AppColors.text
-                                                          .withOpacity(0.7),
+                                                      color: AppColors.text.withOpacity(0.7),
                                                     ),
                                             ),
                                             onTap: () {
@@ -129,16 +122,9 @@ class _WalletMainScreenState extends State<WalletMainScreen>
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 Text(S.of(context).news,
-                                                    style: 1 == model.barValue
-                                                        ? tt.bodyText2
-                                                        : tt.bodyText1!.copyWith(
-                                                            color: AppColors
-                                                                .text
-                                                                .withOpacity(
-                                                                    0.7))),
+                                                    style: 1 == model.barValue ? tt.bodyText2 : tt.bodyText1!.copyWith(color: AppColors.text.withOpacity(0.7))),
                                                 //if (locator<AppSettings>().lastNewsId != locator<UserSettings>().lastNewsRedId)
-                                                if (locator<AppSettings>()
-                                                    .lottery)
+                                                if (locator<AppSettings>().lottery)
                                                   Container(
                                                     width: 8,
                                                     height: 8,
@@ -146,8 +132,7 @@ class _WalletMainScreenState extends State<WalletMainScreen>
                                                       shape: BoxShape.circle,
                                                       color: AppColors.active,
                                                     ),
-                                                    margin:
-                                                        const EdgeInsets.only(
+                                                    margin: const EdgeInsets.only(
                                                       bottom: 10,
                                                       left: 4,
                                                     ),
@@ -165,21 +150,16 @@ class _WalletMainScreenState extends State<WalletMainScreen>
                                         if (model.barValue == 0) ...[
                                           if (model.manualRefresh)
                                             Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 10),
+                                              padding: const EdgeInsets.symmetric(vertical: 10),
                                               child: LinearProgressIndicator(),
                                             ),
                                           SizedBox(height: 14),
                                           //cart
                                           Showcase(
-                                            key: locator<MainScreenModel>()
-                                                    .showcaseKeys[
-                                                'account_carousel'],
+                                            key: locator<MainScreenModel>().showcaseKeys['account_carousel'],
                                             //key: locator<MainScreenModel>().showcaseKeys[0],
                                             contentPadding: EdgeInsets.all(8.0),
-                                            description:
-                                                'Swipe to change account',
+                                            description: 'Swipe to change account',
                                             child: AccountCarousel(),
                                           ),
                                         ]
@@ -194,26 +174,16 @@ class _WalletMainScreenState extends State<WalletMainScreen>
                             ...() {
                               if (model.barValue == 0)
                                 return [
-                                  Padding(
-                                      padding: const EdgeInsets.all(16),
-                                      child: TokenTypeSwitch()),
+                                  Padding(padding: const EdgeInsets.all(16), child: TokenTypeSwitch()),
                                   Expanded(
                                     child: model.state == ViewState.Busy
                                         ? ShimmerBalancesListView()
                                         : ChangeNotifierProvider.value(
                                             value: model.balListModel,
-                                            builder: (_, __) =>
-                                                Consumer<BalListModel>(
-                                              builder: (_, balModel, __) =>
-                                                  BalancesListView(
+                                            builder: (_, __) => Consumer<BalListModel>(
+                                              builder: (_, balModel, __) => BalancesListView(
                                                 model,
-                                                key: ValueKey(model
-                                                        .currAccIndex +
-                                                    model
-                                                        .accManager
-                                                        .allAccounts[
-                                                            model.currAccIndex]
-                                                        .hashCode),
+                                                key: ValueKey(model.currAccIndex + model.accManager.allAccounts[model.currAccIndex].hashCode),
                                               ),
                                             ),
                                           ),
@@ -277,8 +247,7 @@ class PremiumWidget extends StatelessWidget {
             if (active) {
               Flushbar.success(title: S.of(context).youProNow(type)).show();
             } else {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (_) => Pro_PremiumView()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => Pro_PremiumView()));
             }
           }
         },
@@ -312,10 +281,7 @@ class NotificationWidget extends StatelessWidget {
             height: 40,
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                gradient: AppColors.altGradient,
-                border: Border.all(
-                    width: 1, color: AppColors.inactiveText.withOpacity(0.1))),
+                borderRadius: BorderRadius.circular(12), gradient: AppColors.altGradient, border: Border.all(width: 1, color: AppColors.inactiveText.withOpacity(0.1))),
             child: AppIcons.notification_bell(20, AppColors.text),
           ),
           isNewNotification
@@ -325,11 +291,7 @@ class NotificationWidget extends StatelessWidget {
                   child: Container(
                     height: 14,
                     width: 14,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.primary,
-                        border:
-                            Border.all(width: 2, color: AppColors.primaryBg)),
+                    decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.primary, border: Border.all(width: 2, color: AppColors.primaryBg)),
                   ),
                 )
               : SizedBox()
@@ -398,14 +360,9 @@ class _TokenTypeSwitchState extends State<TokenTypeSwitch> {
                     decoration: BoxDecoration(
                       gradient: AppColors.altGradient,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                          width: 1,
-                          color: AppColors.inactiveText.withOpacity(0.1)),
+                      border: Border.all(width: 1, color: AppColors.inactiveText.withOpacity(0.1)),
                       boxShadow: [
-                        BoxShadow(
-                            blurRadius: 18,
-                            color: AppColors.shadowColor,
-                            offset: Offset(0, 13)),
+                        BoxShadow(blurRadius: 18, color: AppColors.shadowColor, offset: Offset(0, 13)),
                       ],
                     ),
                     child: AppIcons.filter(24, AppColors.text),
@@ -417,10 +374,7 @@ class _TokenTypeSwitchState extends State<TokenTypeSwitch> {
                   child: AnimatedButtonBar([
                     ButtonBarEntry(
                       child: Text(S.of(context).coin,
-                          style: 0 == barValue
-                              ? Theme.of(context).textTheme.bodyText2
-                              : Theme.of(context).textTheme.bodyText1!.copyWith(
-                                  color: AppColors.text.withOpacity(0.7))),
+                          style: 0 == barValue ? Theme.of(context).textTheme.bodyText2 : Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.text.withOpacity(0.7))),
                       onTap: () {
                         if (barValue != 0) {
                           setState(() {
@@ -435,24 +389,15 @@ class _TokenTypeSwitchState extends State<TokenTypeSwitch> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(S.of(context).nft,
-                              style: 1 == barValue
-                                  ? Theme.of(context).textTheme.bodyText2
-                                  : Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(
-                                          color:
-                                              AppColors.text.withOpacity(0.7))),
+                              style:
+                                  1 == barValue ? Theme.of(context).textTheme.bodyText2 : Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.text.withOpacity(0.7))),
                           //if (locator<AppSettings>().lastNewsId != locator<UserSettings>().lastNewsRedId)
                           if (locator<AppSettings>().lottery)
                             Container(
                               width: 8,
                               height: 8,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: AppColors.active),
-                              margin:
-                                  const EdgeInsets.only(bottom: 10, left: 4),
+                              decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.active),
+                              margin: const EdgeInsets.only(bottom: 10, left: 4),
                             ),
                         ],
                       ),
@@ -488,15 +433,9 @@ class _TokenTypeSwitchState extends State<TokenTypeSwitch> {
                       GestureDetector(
                           onTap: () => setState(() {
                                 index = i;
-                                locator<WalletMainScreenModel>()
-                                        .tokenFilterType =
-                                    values[i][1] as TokenFilterType;
+                                locator<WalletMainScreenModel>().tokenFilterType = values[i][1] as TokenFilterType;
                               }),
-                          child: TokenTypeButton(
-                              values[i][0] as String,
-                              values[i][1] ==
-                                  locator<WalletMainScreenModel>()
-                                      .tokenFilterType))
+                          child: TokenTypeButton(values[i][0] as String, values[i][1] == locator<WalletMainScreenModel>().tokenFilterType))
                   ];
                 }()
               ],
@@ -511,32 +450,21 @@ class _TokenTypeSwitchState extends State<TokenTypeSwitch> {
 class TokenTypeButton extends StatelessWidget {
   final String value;
   final bool selected;
-  const TokenTypeButton(this.value, this.selected, {Key? key})
-      : super(key: key);
+
+  const TokenTypeButton(this.value, this.selected, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var tt = Theme.of(context).textTheme;
     return Container(
-      decoration: BoxDecoration(
-          boxShadow: selected
-              ? [
-                  BoxShadow(
-                      blurRadius: 18,
-                      color: AppColors.shadowColor,
-                      offset: Offset(0, 13))
-                ]
-              : null),
+      decoration: BoxDecoration(boxShadow: selected ? [BoxShadow(blurRadius: 18, color: AppColors.shadowColor, offset: Offset(0, 13))] : null),
       child: AnimatedContainer(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
         ),
         padding: const EdgeInsets.only(top: 10, right: 18, left: 18),
         duration: Duration(milliseconds: 200),
-        child: Text(value,
-            style: selected
-                ? tt.bodyText2
-                : tt.bodyText1!.copyWith(color: AppColors.inactiveText)),
+        child: Text(value, style: selected ? tt.bodyText2 : tt.bodyText1!.copyWith(color: AppColors.inactiveText)),
       ),
     );
   }
@@ -553,47 +481,44 @@ class AccountCard extends StatelessWidget {
     return Consumer<WalletMainScreenModel>(builder: (_, model, __) {
       var acc = model.accManager.allAccounts[index];
 
-      return AspectRatio(
-        aspectRatio: 16 / 8,
-        child: Container(
-          margin: const EdgeInsets.all(4),
-          padding: const EdgeInsets.all(26),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(32),
-            gradient: AppColors.cardGradient,
+      return SingleChildScrollView(
+        child: AspectRatio(
+          aspectRatio: 16 / 8,
+          child: Container(
+            margin: const EdgeInsets.all(4),
+            padding: const EdgeInsets.all(26),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(32),
+              // gradient: AppColors.cardGradient,
+              color: Colors.red,
+            ),
+            child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              Text('${acc.accountAlias}', style: tt.bodyText1!.copyWith(color: AppColors.inactiveText)),
+              ...() {
+                if (model.state == ViewState.Busy)
+                  return [
+                    Shimmer.fromColors(
+                      child: shimmerBlock(130, 30, 16),
+                      baseColor: AppColors.inactiveText.withOpacity(0.3),
+                      highlightColor: AppColors.active,
+                    ),
+                    Shimmer.fromColors(
+                      child: shimmerBlock(90, 30, 16),
+                      baseColor: AppColors.inactiveText.withOpacity(0.3),
+                      highlightColor: AppColors.active,
+                    ),
+                  ];
+                else
+                  return [
+                    Text('$FIAT_CURRENCY_LITERAL${acc.totalBalance.toStringWithFractionDigits(2)}', style: tt.headline5),
+                    AccountPNL(
+                      '${acc.totalPNL.toStringWithFractionDigits(2)}',
+                      '${acc.totalPNLPercent.toStringWithFractionDigits(2)}',
+                    ),
+                  ];
+              }()
+            ]),
           ),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text('${acc.accountAlias}',
-                    style:
-                        tt.bodyText1!.copyWith(color: AppColors.inactiveText)),
-                ...() {
-                  if (model.state == ViewState.Busy)
-                    return [
-                      Shimmer.fromColors(
-                        child: shimmerBlock(130, 30, 16),
-                        baseColor: AppColors.inactiveText.withOpacity(0.3),
-                        highlightColor: AppColors.active,
-                      ),
-                      Shimmer.fromColors(
-                        child: shimmerBlock(90, 30, 16),
-                        baseColor: AppColors.inactiveText.withOpacity(0.3),
-                        highlightColor: AppColors.active,
-                      ),
-                    ];
-                  else
-                    return [
-                      Text(
-                          '$FIAT_CURRENCY_LITERAL${acc.totalBalance.toStringWithFractionDigits(2)}',
-                          style: tt.headline5),
-                      AccountPNL(
-                        '${acc.totalPNL.toStringWithFractionDigits(2)}',
-                        '${acc.totalPNLPercent.toStringWithFractionDigits(2)}',
-                      ),
-                    ];
-                }()
-              ]),
         ),
       );
     });
@@ -605,65 +530,60 @@ class EditAccountsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 16 / 8,
-      child: GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => AccountsSettingsScreen()));
-        },
-        behavior: HitTestBehavior.opaque,
-        child: Center(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(32),
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-              ),
-              child: Stack(
-                children: [
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture(
-                          AppIcons.plus_circle(21).pictureProvider,
-                          allowDrawingOutsideViewBox: true,
-                          width: 28,
-                          height: 28,
-                          fit: BoxFit.contain,
-                          colorFilter:
-                              ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                        ),
-                        SizedBox(height: 8),
-                        Text(S.of(context).addChange,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText2!
-                                .copyWith(color: Colors.white)),
-                      ],
+    return SingleChildScrollView(
+      child: AspectRatio(
+        aspectRatio: 16 / 8,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) => AccountsSettingsScreen()));
+          },
+          behavior: HitTestBehavior.opaque,
+          child: Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(32),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                ),
+                child: Stack(
+                  children: [
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture(
+                            AppIcons.plus_circle(21).pictureProvider,
+                            allowDrawingOutsideViewBox: true,
+                            width: 28,
+                            height: 28,
+                            fit: BoxFit.contain,
+                            colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                          ),
+                          SizedBox(height: 8),
+                          Text(S.of(context).addChange, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white)),
+                        ],
+                      ),
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: SvgPicture.asset(
-                      'assets/images/vector/icons/elipsLeft.svg',
-                      fit: BoxFit.fill,
-                      clipBehavior: Clip.hardEdge,
-                      allowDrawingOutsideViewBox: true,
+                    Align(
+                      alignment: Alignment.bottomLeft,
+                      child: SvgPicture.asset(
+                        'assets/images/vector/icons/elipsLeft.svg',
+                        fit: BoxFit.fill,
+                        clipBehavior: Clip.hardEdge,
+                        allowDrawingOutsideViewBox: true,
+                      ),
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: SvgPicture.asset(
-                      'assets/images/vector/icons/elipsRight.svg',
-                      fit: BoxFit.fill,
-                      clipBehavior: Clip.hardEdge,
-                      allowDrawingOutsideViewBox: true,
-                    ),
-                  )
-                ],
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: SvgPicture.asset(
+                        'assets/images/vector/icons/elipsRight.svg',
+                        fit: BoxFit.fill,
+                        clipBehavior: Clip.hardEdge,
+                        allowDrawingOutsideViewBox: true,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -675,18 +595,19 @@ class EditAccountsCard extends StatelessWidget {
 
 class AccountCarousel extends StatefulWidget {
   AccountCarousel();
+
   @override
   State<StatefulWidget> createState() {
     return _AccountCarouselState();
   }
 }
 
-class _AccountCarouselState extends State<AccountCarousel>
-    with TickerProviderStateMixin {
+class _AccountCarouselState extends State<AccountCarousel> with TickerProviderStateMixin {
   late List<Widget> slides;
   final CarouselController _controller = CarouselController();
 
   int index = 0;
+
   @override
   void initState() {
     locator<WalletMainScreenModel>().addListener(() {
@@ -722,8 +643,7 @@ class _AccountCarouselState extends State<AccountCarousel>
                 onPageChanged: (index_, reason) {
                   setState(() {
                     index = index_;
-                    if (index_ != 0 && model.currAccIndex != index - 1)
-                      model.currAccIndex = index_ - 1;
+                    if (index_ != 0 && model.currAccIndex != index - 1) model.currAccIndex = index_ - 1;
                   });
                 }),
           ),
@@ -739,13 +659,10 @@ class _AccountCarouselState extends State<AccountCarousel>
                 child: Container(
                   width: 8.0,
                   height: 8.0,
-                  margin: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 6.0),
+                  margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 6.0),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: entry == index
-                        ? AppColors.primary
-                        : AppColors.inactiveText.withOpacity(0.3),
+                    color: entry == index ? AppColors.primary : AppColors.inactiveText.withOpacity(0.3),
                   ),
                 ),
               );
@@ -779,35 +696,31 @@ class ShimmerBalancesListView extends StatelessWidget {
 
 class BalancesListView extends StatelessWidget {
   final WalletMainScreenModel walletMainModel;
+
   const BalancesListView(this.walletMainModel, {Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
     var balances = <WalletBalance>[];
     switch (walletMainModel.tokenFilterType) {
       case TokenFilterType.All:
-        balances = walletMainModel
-            .accManager.allAccounts[walletMainModel.currAccIndex].allBalances;
+        balances = walletMainModel.accManager.allAccounts[walletMainModel.currAccIndex].allBalances;
         break;
       case TokenFilterType.Native:
-        balances = walletMainModel
-            .accManager.allAccounts[walletMainModel.currAccIndex].coinBalances;
+        balances = walletMainModel.accManager.allAccounts[walletMainModel.currAccIndex].coinBalances;
         break;
       case TokenFilterType.BEP20:
-        balances = walletMainModel
-            .accManager.allAccounts[walletMainModel.currAccIndex].bep20Balances;
+        balances = walletMainModel.accManager.allAccounts[walletMainModel.currAccIndex].bep20Balances;
         break;
       case TokenFilterType.ERC20:
-        balances = walletMainModel
-            .accManager.allAccounts[walletMainModel.currAccIndex].erc20Balances;
+        balances = walletMainModel.accManager.allAccounts[walletMainModel.currAccIndex].erc20Balances;
         break;
       case TokenFilterType.BEP2:
-        balances = walletMainModel.accManager
-            .allAccounts[walletMainModel.currAccIndex].bc_bep2_Balances;
+        balances = walletMainModel.accManager.allAccounts[walletMainModel.currAccIndex].bc_bep2_Balances;
         break;
       case TokenFilterType.BEP8:
-        balances = walletMainModel.accManager
-            .allAccounts[walletMainModel.currAccIndex].bc_bep8_Balances;
+        balances = walletMainModel.accManager.allAccounts[walletMainModel.currAccIndex].bc_bep8_Balances;
         break;
     }
 
@@ -842,9 +755,7 @@ class TokenCardShimmerPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(
-            color: AppColors.inactiveText.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(24)),
+        decoration: BoxDecoration(color: AppColors.inactiveText.withOpacity(0.3), borderRadius: BorderRadius.circular(24)),
         height: 90,
         padding: const EdgeInsets.fromLTRB(12, 12, 20, 12),
         child: Shimmer.fromColors(
@@ -855,9 +766,7 @@ class TokenCardShimmerPlaceholder extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.only(right: 16),
                 padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    color: AppColors.secondaryBG,
-                    borderRadius: BorderRadius.circular(16)),
+                decoration: BoxDecoration(color: AppColors.secondaryBG, borderRadius: BorderRadius.circular(16)),
                 child: Icon(
                   Icons.ac_unit,
                   size: 45,
@@ -907,16 +816,15 @@ class TokenCardHeroWrapper extends StatelessWidget {
   final String heroTag;
   final WalletBalance balance;
   final WalletMainScreenModel model;
-  const TokenCardHeroWrapper(this.heroTag, this.balance, this.model, {Key? key})
-      : super(key: key);
+
+  const TokenCardHeroWrapper(this.heroTag, this.balance, this.model, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var card = TokenCard(balance);
     return GestureDetector(
       onTap: () async {
-        locator<WalletMainScreenModel>().currentTokenMarketsModel =
-            TokenMarketsModel();
+        locator<WalletMainScreenModel>().currentTokenMarketsModel = TokenMarketsModel();
         await showCupertinoModalBottomSheet(
           elevation: 0,
           enableDrag: true,
@@ -924,8 +832,7 @@ class TokenCardHeroWrapper extends StatelessWidget {
           barrierColor: Color(0xA6272323),
           backgroundColor: Colors.transparent,
           context: context,
-          builder: (context) =>
-              TokenCardActionsBottomSheet(heroTag, card, model),
+          builder: (context) => TokenCardActionsBottomSheet(heroTag, card, model),
         );
 
         locator<WalletMainScreenModel>().currentTokenMarketsModel = null;
@@ -945,21 +852,16 @@ class BlockchainConnectionState extends StatelessWidget {
       builder: (context, model, child) {
         var children = [
           for (var i in model.states.entries)
-            if (i.value == false)
-              Text('⚠️ No connection to ${i.key.toString().split('.').last}',
-                  textAlign: TextAlign.center),
+            if (i.value == false) Text('⚠️ No connection to ${i.key.toString().split('.').last}', textAlign: TextAlign.center),
         ];
         return children.isNotEmpty
             ? Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 5, horizontal: 16),
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 16),
                 decoration: BoxDecoration(
                   color: AppColors.red.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: children))
+                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children))
             : SizedBox();
       },
     );

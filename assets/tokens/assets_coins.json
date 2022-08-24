@@ -25,6 +25,14 @@
             "decimals": 9,
             "coingeckoId": "solana",
             "showByDefault": true
+        },
+        {
+            "network": "Foil",
+            "name": "Foil",
+            "symbol": "Foil",
+            "decimals": 9,
+            "coingeckoId": "foil",
+            "showByDefault": true
         }
     ]
 }

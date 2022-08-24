@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:voola/core/api/ApiBase.dart';
 import 'package:voola/core/api/binance_chain/BCApi.dart';
 import 'package:voola/core/api/coingecko/CoingeckoAPI.dart';
@@ -102,11 +103,16 @@ class AccountManager extends ChangeNotifier {
       _tokensContainer.COINS.firstWhere((c) => c.symbol == 'SOL')
     ];
 
+    var _foilTokens = [
+      _tokensContainer.COINS.firstWhere((c) => c.symbol == 'Foil')
+    ];
+
     var ids = {
       ..._ethTokens.map((e) => e.coingeckoId).toSet(),
       ..._bscTokens.map((e) => e.coingeckoId).toSet(),
       ..._bcTokens.map((e) => e.coingeckoId).toSet(),
       ..._solanaTokens.map((e) => e.coingeckoId).toSet(),
+      ..._foilTokens.map((e) => e.coingeckoId).toSet(),
     }.toList();
 
     try {
@@ -187,6 +193,15 @@ class AccountManager extends ChangeNotifier {
         ComputeBalancesArg<String, sol.RPCClient>(
           _solanaTokens,
           allAccounts.map((e) => e.solWallet.address).toList(),
+          tickersService.simpleTickers!,
+          ENVS.SOL_ENV!,
+        ),
+      ),
+      compute(
+        _loadFoilBalances,
+        ComputeBalancesArg(
+          _foilTokens,
+          allAccounts.map((e) => e.foilWallet.address).toList(),
           tickersService.simpleTickers!,
           ENVS.SOL_ENV!,
         ),
@@ -300,6 +315,36 @@ class AccountManager extends ChangeNotifier {
         try {
           var acc = allAccounts
               .firstWhere((acc) => acc.solWallet.address == result.address);
+          var coinIndex = acc.coinBalances
+              .indexWhere((e) => e.token == result.balances.first.token);
+          if (coinIndex < 0)
+            acc.coinBalances.add(result.balances.first);
+          else
+            acc.coinBalances[coinIndex] = result.balances.first;
+          //TODO
+          //acc.bep20Balances = result.balances.sublist(1);
+        } catch (e, st) {
+          print('err: account with eth address ${result.address} not found');
+          print('$e\n$st');
+        }
+      }
+    }
+
+    var foilResults = results[3] as ComputeBalancesResult<String>;
+    if (foilResults.hasError) {
+      blockchainConnState
+        ..states[TokenNetwork.Foil] = false
+        ..notifyListeners();
+    } else {
+      if (blockchainConnState.states[TokenNetwork.Foil] != true) {
+        blockchainConnState
+          ..states[TokenNetwork.Foil] = true
+          ..notifyListeners();
+      }
+      for (var result in foilResults.result) {
+        try {
+          var acc = allAccounts
+              .firstWhere((acc) => acc.foilWallet.address == result.address);
           var coinIndex = acc.coinBalances
               .indexWhere((e) => e.token == result.balances.first.token);
           if (coinIndex < 0)
@@ -821,4 +866,58 @@ Future<ComputeBalancesResult<String>> _loadSolanaBalances(
 
     return ComputeBalancesResult(true, resultBalances);
   }
+}
+
+Future<ComputeBalancesResult<String>> _loadFoilBalances(
+    ComputeBalancesArg args) async {
+  var tokens = args.tokens;
+  var addresses = args.addresses;
+  var tickers = args.tickers;
+  var resultBalances = <ParsedBalances<String>>[];
+  var provider = args.provider;
+
+  var balances;
+  Future foilBalanceFromAddress(address) async {
+    final url = 'http://185.63.191.197:9088/addresses/assetbalanceown/1/$address';
+    try {
+      final response = await http.get(Uri.parse(url));
+      final responseData = json.decode(response.body);
+      balances = responseData;
+      return balances;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  try {
+    var result =
+        await Future.wait(addresses.map((addr) => foilBalanceFromAddress(addr)));
+    for (var addr in addresses.indexed()) {
+      var addressBalances = <WalletBalance>[];
+      // var rawBalances = result.sublist(
+      //     addr.first * tokens.length, (addr.first + 1) * tokens.length);
+      for (var t in tokens.indexed()) {
+        // ignore: non_constant_identifier_names
+        var token_ = t.last as WalletToken;
+        var ticker = tickers[token_.coingeckoId];
+        var balance = WalletBalance()
+          ..token = token_
+          ..balance = Decimal.fromInt(balances)
+          ..fiatPrice = Decimal.zero
+          ..changePercent = Decimal.one;
+////
+        balance.fiatBalance = Decimal.zero;
+        addressBalances.add(balance);
+      }
+      resultBalances
+          .add(ParsedBalances<String>(addr.last as String, addressBalances));
+    }
+    return ComputeBalancesResult(false, resultBalances);
+  } catch (e) {
+    print('$e');
+
+    return ComputeBalancesResult(true, resultBalances);
+  }
+
+
 }

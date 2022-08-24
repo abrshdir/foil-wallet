@@ -1,16 +1,17 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:bip39/bip39.dart' as bip39;
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'package:voola/core/api/foil/model/KeyApi.dart';
 import 'package:voola/core/authentication/AuthService.dart';
 import 'package:voola/locator.dart';
 import 'package:voola/shared.dart';
-import 'package:bip39/bip39.dart' as bip39;
-import 'package:flutter/foundation.dart';
 import 'package:voola/ui/MainScreen.dart';
 import 'package:voola/ui/views/start/SetPassword.dart';
 import 'package:voola/ui/views/wallet/WalletMainScreenModel.dart';
-import 'package:dartx/dartx.dart';
 
 import 'RestoreWallet.dart';
 
@@ -67,18 +68,32 @@ class CreateWalletModel extends BaseViewModel {
     setState(ViewState.Idle);
   }
 
+  Future<KeyApi> foilWalletFromSeed(seed) async {
+    print("mnemonic.toString(), ${mnemonic.toString()}");
+    final url = 'http://185.63.191.197:9088/addresses/makepairbyphrase';
+    final body = mnemonic;
+    try {
+      final response = await http.post(Uri.parse(url), body: body, headers: {"Content-Type": "plain/text; charset=utf-8"});
+      final responseData = json.decode(response.body);
+      print(responseData.toString());
+      return KeyApi.fromJson(responseData);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   Future<void> createAccount(BuildContext context) async {
-    var seed =
-        await compute<String, Uint8List>(calculateSeedFromMnemonic, mnemonic);
-    await _authService.createNewAccount(mnemonic, seed);
+    var seed = await compute<String, Uint8List>(calculateSeedFromMnemonic, mnemonic);
+    var foilSeed = await foilWalletFromSeed(seed);
+    await _authService.createNewAccount(mnemonic, seed, foilSeed);
     locator<WalletMainScreenModel>().loadBalances();
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => MainAppScreen()), (_) => false);
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => MainAppScreen()), (_) => false);
   }
 }
 
 class CreateWalletScreen extends StatelessWidget {
   bool addWallet;
+
   CreateWalletScreen({this.addWallet = false});
 
   @override
@@ -114,22 +129,12 @@ class CreateWalletScreen extends StatelessWidget {
                             child: RichText(
                               textAlign: TextAlign.center,
                               text: TextSpan(children: <TextSpan>[
-                                TextSpan(
-                                    text: S.of(context).mnemonicDescription1,
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1),
+                                TextSpan(text: S.of(context).mnemonicDescription1, style: Theme.of(context).textTheme.bodyText1),
                                 TextSpan(
                                   text: S.of(context).mnemonicDescription2,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText2
-                                      ?.copyWith(color: AppColors.active),
+                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.active),
                                 ),
-                                TextSpan(
-                                    text:
-                                        ' ${S.of(context).mnemonicDescription3}',
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1)
+                                TextSpan(text: ' ${S.of(context).mnemonicDescription3}', style: Theme.of(context).textTheme.bodyText1)
                               ]),
                             ),
                           ),
@@ -139,10 +144,7 @@ class CreateWalletScreen extends StatelessWidget {
                           alignment: WrapAlignment.center,
                           spacing: 8,
                           runSpacing: 12,
-                          children: [
-                            for (var w in model.newMnemonicList.indexed())
-                              MnemonicWordChip(w[0], w[1])
-                          ],
+                          children: [for (var w in model.newMnemonicList.indexed()) MnemonicWordChip(w[0], w[1])],
                         ),
                         SizedBox(height: 30),
                         Spacer(),
@@ -158,10 +160,7 @@ class CreateWalletScreen extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(6),
                                       border: Border.all(
                                         width: 1,
-                                        color: !model.loseMnemonicCheckbox
-                                            ? AppColors.text
-                                            : Colors.transparent
-                                                .withOpacity(0.1),
+                                        color: !model.loseMnemonicCheckbox ? AppColors.text : Colors.transparent.withOpacity(0.1),
                                       ),
                                     ),
                                   ),
@@ -183,11 +182,7 @@ class CreateWalletScreen extends StatelessWidget {
                           Expanded(
                               child: Text(
                             S.of(context).mnemonicWarning,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText1!
-                                .copyWith(
-                                    color: AppColors.text.withOpacity(0.6)),
+                            style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.text.withOpacity(0.6)),
                           ))
                         ]),
                         Row(children: [
@@ -200,11 +195,7 @@ class CreateWalletScreen extends StatelessWidget {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(6),
-                                      border: Border.all(
-                                          color: !model.termsCheckbox
-                                              ? AppColors.text
-                                              : Colors.transparent
-                                                  .withOpacity(0.1)),
+                                      border: Border.all(color: !model.termsCheckbox ? AppColors.text : Colors.transparent.withOpacity(0.1)),
                                     ),
                                   ),
                                 ),
@@ -225,24 +216,18 @@ class CreateWalletScreen extends StatelessWidget {
                           Expanded(
                             child: Text(
                               '${S.of(context).confirmPhrase1} ${S.of(context).confirmPhrase2}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1!
-                                  .copyWith(
-                                      color: AppColors.text.withOpacity(0.7)),
+                              style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.text.withOpacity(0.7)),
                             ),
                           )
                         ]),
                         SizedBox(height: 12),
                         Button(
                             value: S.of(context).next,
-                            onTap: model.loseMnemonicCheckbox &&
-                                    model.termsCheckbox
+                            onTap: model.loseMnemonicCheckbox && model.termsCheckbox
                                 ? () {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (_) =>
-                                            CheckMnemonicScreen(model),
+                                        builder: (_) => CheckMnemonicScreen(model),
                                       ),
                                     );
                                   }
@@ -259,6 +244,7 @@ class CreateWalletScreen extends StatelessWidget {
 
 class CheckMnemonicScreen extends StatelessWidget {
   CreateWalletModel model;
+
   CheckMnemonicScreen(this.model, {Key? key}) : super(key: key);
 
   @override
@@ -272,8 +258,7 @@ class CheckMnemonicScreen extends StatelessWidget {
             model.verifyMnemonicList.clear();
             model.lastCorrectIndex = -1;
             model.verifyValid = true;
-            model.reformedMnemonicList = List.from(model.newMnemonicList)
-              ..shuffle();
+            model.reformedMnemonicList = List.from(model.newMnemonicList)..shuffle();
             return true;
           },
           child: Scaffold(
@@ -309,29 +294,16 @@ class CheckMnemonicScreen extends StatelessWidget {
                                   (index) => GestureDetector(
                                     behavior: HitTestBehavior.opaque,
                                     onTap: () {
-                                      if (model.verifyMnemonicList
-                                          .containsWhere((e) =>
-                                              model.reformedMnemonicList[
-                                                          index] ==
-                                                      e
-                                                  ? true
-                                                  : false))
-                                        model.verifyMnemonicList.remove(
-                                            model.reformedMnemonicList[index]);
+                                      if (model.verifyMnemonicList.containsWhere((e) => model.reformedMnemonicList[index] == e ? true : false))
+                                        model.verifyMnemonicList.remove(model.reformedMnemonicList[index]);
                                       else
-                                        model.verifyMnemonicList.add(
-                                            model.reformedMnemonicList[index]);
-                                      if (listEquals(
-                                          model.newMnemonicList.sublist(0,
-                                              model.verifyMnemonicList.length),
-                                          model.verifyMnemonicList)) {
+                                        model.verifyMnemonicList.add(model.reformedMnemonicList[index]);
+                                      if (listEquals(model.newMnemonicList.sublist(0, model.verifyMnemonicList.length), model.verifyMnemonicList)) {
                                         model.verifyValid = true;
-                                        model.lastCorrectIndex =
-                                            model.verifyMnemonicList.length - 1;
+                                        model.lastCorrectIndex = model.verifyMnemonicList.length - 1;
                                       } else
                                         model.verifyValid = false;
-                                      if (listEquals(model.newMnemonicList,
-                                          model.verifyMnemonicList)) {
+                                      if (listEquals(model.newMnemonicList, model.verifyMnemonicList)) {
                                         model.setPassworBtnActive = true;
                                       } else {
                                         model.setPassworBtnActive = false;
@@ -339,14 +311,7 @@ class CheckMnemonicScreen extends StatelessWidget {
                                       model.setState();
                                     },
                                     child: MnemonicWordChipFilled(
-                                      model.verifyMnemonicList.containsWhere(
-                                              (e) => model.reformedMnemonicList[
-                                                          index] ==
-                                                      e
-                                                  ? true
-                                                  : false)
-                                          ? index
-                                          : null,
+                                      model.verifyMnemonicList.containsWhere((e) => model.reformedMnemonicList[index] == e ? true : false) ? index : null,
                                       model.reformedMnemonicList[index],
                                     ),
                                   ),
@@ -355,28 +320,27 @@ class CheckMnemonicScreen extends StatelessWidget {
                               model.verifyValid
                                   ? Container()
                                   : Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 20),
+                                      padding: const EdgeInsets.symmetric(vertical: 20),
                                       child: Text(
                                         S.of(context).invalidOrder,
                                         textAlign: TextAlign.center,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1!
-                                            .copyWith(color: AppColors.red),
+                                        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.red),
                                       ),
                                     ),
                             ],
                           ),
+                          //TODO: REVERT BACK VERIFY MNEMONIC
                           Button(
                             value: S.of(context).next,
-                            onTap: model.setPassworBtnActive
-                                ? () {
-                                    if (model.verifyValid) {
+                            onTap:
+    // model.setPassworBtnActive
+    //                             ?
+                              () {
+    //                                 if (model.verifyValid) {
                                       model.setPassword(context);
                                     }
-                                  }
-                                : null,
+                                  // }
+                                // : null,
                           )
                         ],
                       ),
@@ -399,9 +363,7 @@ class MnemonicWordChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-          border: Border.all(color: AppColors.text),
-          borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(border: Border.all(color: AppColors.text), borderRadius: BorderRadius.circular(12)),
       child: Text(
         word,
         style: Theme.of(context).textTheme.bodyText1!.copyWith(
@@ -416,21 +378,17 @@ class MnemonicWordChipFilled extends StatelessWidget {
   int? index;
   String word;
   bool err;
-  MnemonicWordChipFilled(this.index, this.word, {this.err = false, Key? key})
-      : super(key: key);
+
+  MnemonicWordChipFilled(this.index, this.word, {this.err = false, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: index == null
-          ? BoxDecoration(
-              border: Border.all(color: AppColors.text),
-              borderRadius: BorderRadius.circular(12))
+          ? BoxDecoration(border: Border.all(color: AppColors.text), borderRadius: BorderRadius.circular(12))
           : BoxDecoration(
-              border: err
-                  ? Border.all(color: Theme.of(context).primaryColor)
-                  : null,
+              border: err ? Border.all(color: Theme.of(context).primaryColor) : null,
               color: Theme.of(context).primaryColor,
               borderRadius: BorderRadius.circular(12),
             ),

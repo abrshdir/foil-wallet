@@ -33,6 +33,7 @@ class RequestResult {
 
 abstract class ApiBase {
   late String endpoint;
+  late String endpoint2;
 
   final httpClient = http.Client();
 

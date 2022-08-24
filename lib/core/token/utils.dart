@@ -11,7 +11,7 @@ import 'dart:convert';
 import 'WalletToken.dart';
 import 'package:voola/shared.dart';
 
-enum TokenNetwork { BinanceChain, Ethereum, BinanceSmartChain, Solana }
+enum TokenNetwork { BinanceChain, Ethereum, BinanceSmartChain, Solana, Foil }
 
 const TOKEN_ICON_BASE_URLs = {
   TokenNetwork.BinanceSmartChain:
@@ -22,6 +22,8 @@ const TOKEN_ICON_BASE_URLs = {
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum',
   TokenNetwork.Solana:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana',
+  TokenNetwork.Foil:
+      'https://miro.medium.com/fit/c/88/88/1*UdyjmenakUXWV6qT7fdtrw.png',
 };
 
 /////////////////////////////////////////////////////////////////
@@ -255,6 +257,7 @@ void parseTokens(tokenlist, WALLET_TOKENS_CONTAINER tokensContainer) {
 }
 
 void parseTokensShow(tokenlist, WALLET_TOKENS_CONTAINER tokensContainer) {
+
   switch (tokenlist['network']) {
     case 'Ethereum':
       var assets = tokenlist['assets'];

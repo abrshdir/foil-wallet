@@ -15,6 +15,7 @@ class ENVS_CONTAINER {
 
   Web3Client? BSC_ENV;
   Web3Client? ETH_ENV;
+  // Web3Client? FOIL_ENV;
   Web3Client? ETH_DAPP_ENV;
   sol.RPCClient? SOL_ENV;
   Map<int, String>? chainId_urlProvider;
@@ -35,6 +36,7 @@ void setupEnv() {
   ENVS.ETH_ENV = Web3Client(settings.eth_rpc, Client());
   ENVS.ETH_DAPP_ENV = Web3Client(settings.eth_dapp_rpc, Client());
   ENVS.SOL_ENV = sol.RPCClient(settings.sol_rpc);
+  // ENVS.FOIL_ENV = sol.RPCClient(settings.sol_rpc);
   ENVS.chainId_urlProvider = {
     1: settings.eth_dapp_rpc,
     56: settings.bsc_rpc,
@@ -116,6 +118,7 @@ final NETWORK_COINS = {
   TokenNetwork.BinanceChain: 'bnb',
   TokenNetwork.Ethereum: 'eth',
   TokenNetwork.Solana: 'sol',
+  TokenNetwork.Foil: 'fol',
 };
 
 class TokenNetworkInfoWrapper {

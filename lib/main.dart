@@ -16,6 +16,7 @@ import 'package:voola/ui/views/wallet/WalletMainScreenModel.dart';
 import 'core/api/binance_chain/BCApi.dart';
 import 'core/api/bsc/BSCApi.dart';
 import 'core/api/ethereum/ETHApi.dart';
+import 'core/api/foil/FoilApi.dart';
 import 'core/api/tbcc/models/Update.dart';
 import 'core/authentication/AccountManager.dart';
 import 'core/authentication/AuthService.dart';
@@ -59,12 +60,13 @@ Future<void> init({bool retryInternet = false}) async {
         locator.registerLazySingleton(() => BinanceChainApi());
         locator.registerLazySingleton(() => BSCApi());
         locator.registerLazySingleton(() => ETHApi());
+        // locator.registerLazySingleton(() => FoilApi());
         locator.registerLazySingleton(() => TickersService());
         locator.registerLazySingleton(() => AccountManager());
         locator.registerLazySingleton(() => AuthService());
       }
       var authService = locator<AuthService>();
-      var load = (await Future.wait<dynamic>(
+      load = (await Future.wait<dynamic>(
         [
           if (!retryInternet) readWalletTokens(),
           if (!retryInternet) storage.readUserSettings(),

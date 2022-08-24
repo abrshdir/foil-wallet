@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
-import 'package:solana/solana.dart' as sol;
 import 'package:decimal/decimal.dart';
+import 'package:solana/solana.dart' as sol;
 import 'package:voola/core/api/tbcc/models/TBCCUser.dart';
+import 'package:voola/core/authentication/wallets/FoilWallet.dart';
 import 'package:voola/core/balance/WalletBalance.dart';
-
 import 'package:voola/core/token/utils.dart';
 
 import 'wallets/BSCWallet.dart';
@@ -18,6 +18,7 @@ class UserAccount {
   late BSCWallet bscWallet;
   late sol.Wallet solWallet;
   late TBCCUserModel tbccUser;
+  late FoilWallet foilWallet;
   bool? cardAttached;
   String? privHalf;
   late String accountAlias;
@@ -33,9 +34,12 @@ class UserAccount {
   late List<WalletBalance> bc_bep8_Balances;
   late List<WalletBalance> bc_Balances_all;
   late List<WalletBalance> coinBalances;
+
   //late List<WalletBalance> nftBalances;
   late List<WalletBalance> allBalances;
+
   UserAccount();
+
   String addressFormNetwork(TokenNetwork network) {
     if (network == TokenNetwork.Ethereum)
       return ethWallet.address.hex;
@@ -43,6 +47,8 @@ class UserAccount {
       return bcWallet.address!;
     else if (network == TokenNetwork.BinanceSmartChain)
       return bscWallet.address.hex;
+    else if (network == TokenNetwork.Foil)
+      return foilWallet.address.hex;
     else if (network == TokenNetwork.Solana)
       return solWallet.address;
     else
@@ -50,28 +56,22 @@ class UserAccount {
   }
 
   void calcTotalBalance() {
-    totalBalance = allBalances.fold<Decimal>(Decimal.zero,
-        (previousValue, element) => previousValue + element.fiatBalance);
+    totalBalance = allBalances.fold<Decimal>(Decimal.zero, (previousValue, element) => previousValue + element.fiatBalance);
   }
 
   void calcTotalPNL() {
     totalPNL = allBalances.fold(Decimal.zero, (previousValue, element) {
       if (element.fiatBalance != Decimal.zero) {
-        return previousValue +
-            element.fiatBalance *
-                (Decimal.one + element.changePercent / Decimal.fromInt(100));
+        return previousValue + element.fiatBalance * (Decimal.one + element.changePercent / Decimal.fromInt(100));
       } else
         return previousValue;
     });
     totalPNL = totalPNL - totalBalance;
-    totalPNLPercent = totalPNL == Decimal.zero
-        ? Decimal.zero
-        : (totalBalance + totalPNL) / totalPNL / Decimal.fromInt(100);
+    totalPNLPercent = totalPNL == Decimal.zero ? Decimal.zero : (totalBalance + totalPNL) / totalPNL / Decimal.fromInt(100);
   }
 
   void sortBalances() {
-    var balComparator = (WalletBalance bal1, WalletBalance bal2) =>
-        -bal1.fiatBalance.compareTo(bal2.fiatBalance);
+    var balComparator = (WalletBalance bal1, WalletBalance bal2) => -bal1.fiatBalance.compareTo(bal2.fiatBalance);
 
     allBalances.sort(balComparator);
     coinBalances.sort(balComparator);
@@ -113,14 +113,13 @@ class UserAccount {
     mnemonic = json['mnemonic'];
     if (json['seed'] != null)
       seed = Uint8List.fromList((json['seed'] as List<dynamic>).cast<int>());
-
     ethWallet = EthWallet.fromJson(json['eth_wallet']);
     bcWallet = BCWallet.fromJson(json['bc_wallet']);
+    foilWallet = FoilWallet.fromJson(json['foil_wallet']);
     try {
       bscWallet = BSCWallet.fromJson(json['bsc_wallet']);
     } catch (e) {
-      bscWallet = BSCWallet(
-          address: ethWallet.address, privateKey: ethWallet.privateKey);
+      bscWallet = BSCWallet(address: ethWallet.address, privateKey: ethWallet.privateKey);
     }
 
     cardAttached = json['cardAttached'] == '1';
@@ -139,6 +138,7 @@ class UserAccount {
     data['bc_wallet'] = bcWallet.toJson();
     data['eth_wallet'] = ethWallet.toJson();
     data['bsc_wallet'] = bscWallet.toJson();
+    data['foil_wallet'] = foilWallet.toJson();
 
     return data;
   }

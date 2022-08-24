@@ -118,5 +118,6 @@ class BLOCKCHAIN_CONNECTION_STATE extends BaseViewModel {
     TokenNetwork.Ethereum: true,
     TokenNetwork.BinanceSmartChain: true,
     TokenNetwork.Solana: true,
+    TokenNetwork.Foil: true,
   };
 }

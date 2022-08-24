@@ -5,8 +5,8 @@ import 'package:voola/core/api/coingecko/model/SimplePrice.dart';
 
 class CoingeckoApi extends ApiBase {
   CoingeckoApi() {
-    //endpoint = 'https://api.coingecko.com/api/';
-    endpoint = 'https://asia.tbcc.com/api/tickers/api/';
+    endpoint = 'https://api.coingecko.com/api/';
+    // endpoint = 'https://asia.tbcc.com/api/tickers/api/';
   }
 
   Future<ApiResponse<Map<String, SimplePrice>>> loadTickers({

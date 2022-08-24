@@ -108,6 +108,10 @@ class WalletToken {
               '${TOKEN_ICON_BASE_URLs[network]}/assets/${ethAddress!.hexEip55}/logo.png';
 
           break;
+        case TokenNetwork.Foil:
+          url =
+              '${TOKEN_ICON_BASE_URLs[network]}';
+          break;
       }
 
       return CachedNetworkImage(
@@ -131,6 +135,9 @@ class WalletToken {
         break;
       case 'Solana':
         network = TokenNetwork.Solana;
+        break;
+      case 'Foil':
+        network = TokenNetwork.Foil;
         break;
     }
 

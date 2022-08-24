@@ -1,5 +1,9 @@
+import 'dart:math';
+
+import 'package:http/http.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:voola/core/authentication/AccountManager.dart';
+import 'package:voola/core/authentication/wallets/FoilWallet.dart';
 import 'package:voola/core/settings/UserSettings.dart';
 import 'package:voola/global_env.dart';
 import 'package:voola/locator.dart';
@@ -23,7 +27,9 @@ class AuthService {
   final _storage = locator<Storage>();
   final _settings = locator<UserSettings>();
 
-  Future<void> createNewAccount(String mnemonic, Uint8List seed,
+
+
+  Future<void> createNewAccount(String mnemonic, Uint8List seed, foilKeys,
       {bool setCurrent = true,
       String? alias,
       bool? cardAttached,
@@ -31,6 +37,7 @@ class AuthService {
     UserAccount newAccount = UserAccount();
     newAccount.bcWallet = BCWallet.fromSeed(seed, ENVS.BC_ENV!.env!);
     newAccount.ethWallet = EthWallet.fromSeed(seed);
+    newAccount.foilWallet = FoilWallet.fromSeed(foilKeys);
     newAccount.bscWallet = BSCWallet(
         address: newAccount.ethWallet.address,
         privateKey: newAccount.ethWallet.privateKey);

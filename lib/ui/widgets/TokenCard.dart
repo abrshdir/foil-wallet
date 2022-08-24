@@ -2,6 +2,8 @@ import 'dart:math' show pi;
 
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:voola/core/authentication/AccountManager.dart';
@@ -26,6 +28,7 @@ class TokenCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var tt = Theme.of(context).textTheme;
+    print(balance.token.toString());
     return GestureDetector(
       onLongPress: () async {
         var address = locator<AccountManager>().addressByToken(
@@ -126,7 +129,7 @@ class TokenCard extends StatelessWidget {
                           '$FIAT_CURRENCY_LITERAL${balance.fiatBalance.toStringWithFractionDigits(2)}',
                           style: tt.bodyText2),
 
-                      //() {
+                      // {
                       //  var balChange = balance.changePercent / Decimal.fromInt(100) * balance.fiatBalance;
                       //  var ic = AppIcons.arrow(16);
                       //  return Row(children: [
