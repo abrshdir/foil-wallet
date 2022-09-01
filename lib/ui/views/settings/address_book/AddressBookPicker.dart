@@ -54,6 +54,15 @@ class AddressBookPickerScreen extends StatelessWidget {
                   ..network = TokenNetwork.Ethereum
             ];
             break;
+          case TokenNetwork.Foil:
+            myWallets = [
+              for (var acc in locator<AccountManager>().allAccounts)
+                AddressBookAddressEntity()
+                  ..address = acc.foilWallet.address
+                  ..description = acc.accountAlias
+                  ..network = TokenNetwork.Ethereum
+            ];
+            break;
           default:
         }
 

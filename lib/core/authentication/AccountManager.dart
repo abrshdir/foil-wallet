@@ -208,7 +208,7 @@ class AccountManager extends ChangeNotifier {
       ),
       _tbccApi.getUsers(allAccounts.map((e) => e.bcWallet.address!).toList()),
     ]);
-    var ethResults = results[0] as ComputeBalancesResult<EthereumAddress>;
+    var ethResults = await results[0] as ComputeBalancesResult<EthereumAddress>;
     if (ethResults.hasError) {
       blockchainConnState
         ..states[TokenNetwork.Ethereum] = false
@@ -537,6 +537,8 @@ class AccountManager extends ChangeNotifier {
       return acc.bscWallet.address.hex;
     else if (network == TokenNetwork.Solana)
       return acc.solWallet.address;
+    else if (network == TokenNetwork.Foil)
+      return acc.foilWallet.address;
     else
       return '';
   }

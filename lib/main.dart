@@ -33,7 +33,6 @@ main() async {
   setupLocator();
 
   await init();
-
   runApp(WalletApp());
 }
 
@@ -60,7 +59,7 @@ Future<void> init({bool retryInternet = false}) async {
         locator.registerLazySingleton(() => BinanceChainApi());
         locator.registerLazySingleton(() => BSCApi());
         locator.registerLazySingleton(() => ETHApi());
-        // locator.registerLazySingleton(() => FoilApi());
+        locator.registerLazySingleton(() => FoilApi());
         locator.registerLazySingleton(() => TickersService());
         locator.registerLazySingleton(() => AccountManager());
         locator.registerLazySingleton(() => AuthService());
@@ -105,13 +104,13 @@ Future<void> init({bool retryInternet = false}) async {
       }
       if (needToSaveAccs == true) authService.accManager.saveAccounts();
 
-      if (settings.loggedIn) {
-        /// run preload balances
-        locator<WalletMainScreenModel>().loadBalances();
-        locator<TBCCApi>().getUsers(authService.accManager.allAccounts
-            .map((e) => e.bcWallet.address!)
-            .toList());
-      }
+      // if (settings.loggedIn) {
+      //   /// run preload balances
+      //   locator<WalletMainScreenModel>().loadBalances();
+      //   locator<TBCCApi>().getUsers(authService.accManager.allAccounts
+      //       .map((e) => e.bcWallet.address!)
+      //       .toList());
+      // }
       settings.initNetworkFailed = false;
     }
   } catch (e, st) {

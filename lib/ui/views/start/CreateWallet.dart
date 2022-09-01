@@ -332,16 +332,14 @@ class CheckMnemonicScreen extends StatelessWidget {
                           //TODO: REVERT BACK VERIFY MNEMONIC
                           Button(
                             value: S.of(context).next,
-                            onTap:
-    // model.setPassworBtnActive
-    //                             ?
-                              () {
-    //                                 if (model.verifyValid) {
+                            onTap: model.setPassworBtnActive
+                                ? () {
+                                    if (model.verifyValid) {
                                       model.setPassword(context);
                                     }
-                                  // }
-                                // : null,
-                          )
+                                  }
+                                : null,
+                          ),
                         ],
                       ),
                     ),

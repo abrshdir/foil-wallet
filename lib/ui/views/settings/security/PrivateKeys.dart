@@ -48,6 +48,10 @@ class _PrivateKeysScreenState extends State<PrivateKeysScreen> {
                 header: 'Binance Smart Chain',
                 value: bytesToHex(accManager
                     .allAccounts[selectedAcc].bscWallet.privateKey.privateKey)),
+            Tile(
+                header: S.of(context).foilPk,
+                value: accManager
+                    .allAccounts[selectedAcc].foilWallet.privateKey),
           ],
         ),
       ),

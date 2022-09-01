@@ -34,10 +34,9 @@ class _BaseViewState<T extends BaseViewModel> extends State<BaseView<T>> {
             return widget.builder(_, m, __);
           } catch (e, st) {
             print('$e,$st');
-
-            return Container(
-              child: Text('Error'),
-            );
+            return Directionality(
+                textDirection: TextDirection.ltr,
+                child: Text('Error'));
           }
         }));
   }

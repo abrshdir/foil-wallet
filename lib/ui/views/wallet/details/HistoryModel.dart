@@ -1,8 +1,11 @@
 import 'dart:convert';
 
+import 'package:voola/core/api/ApiBase.dart';
 import 'package:voola/core/api/binance_chain/BCApi.dart';
 import 'package:voola/core/api/bsc/BSCApi.dart';
 import 'package:voola/core/api/ethereum/ETHApi.dart';
+import 'package:voola/core/api/foil/FoilApi.dart';
+import 'package:voola/core/api/foil/model/KeyApi.dart';
 import 'package:voola/core/authentication/AuthService.dart';
 
 import 'package:voola/core/token/utils.dart';
@@ -126,6 +129,29 @@ class TxHistoryModel extends BaseViewModel {
       //print(ts);
       //var apiResp = await ENVS.SOL_ENV!.getSignatureStatuses(ts, searchTransactionHistory: true);
       //print(apiResp);
+    } else if (token.network == TokenNetwork.Foil){
+      var address = acc.foilWallet.address;
+
+      ApiResponse<List<FoilTransactionResponse>> apiResp = await locator<FoilApi>().getFoilTransactions(address);
+      print(apiResp.toString());
+      for (var tx in apiResp.load) {
+        var txInfo = HistoryTransaction()
+          ..blockchain = Blockchain.Foil
+          ..type = TransactionType.FoilTransfer
+          ..side= address == tx.recipient
+          ..txHash = tx.signature
+          ..from = tx.creator
+          ..to = tx.recipient
+          ..value = Decimal.fromInt(int.parse(tx.amount.toString()))
+          ..symbol = token.symbol
+          ..fee = Decimal.fromInt(int.parse(tx.feePow.toString()))
+          ..feeSymbol = 'FOIL'
+          ..timestamp = DateTime.fromMillisecondsSinceEpoch(
+              int.parse(tx.timestamp.toString()) * 1000)
+              .toLocal();
+
+        txs.add(txInfo);
+      }
     }
     prepareWidgets(context, token);
     setState(ViewState.Idle);
@@ -184,9 +210,10 @@ enum TransactionType {
   BinanceTransfer,
   ETH_Transfer,
   ETH_ContractCall,
-  BinanceOther
+  BinanceOther,
+  FoilTransfer
 }
-enum Blockchain { BC, Eth, BSC }
+enum Blockchain { BC, Eth, BSC, Foil }
 
 class EthTransactionInfo {
   int? confirmations;

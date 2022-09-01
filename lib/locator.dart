@@ -9,6 +9,7 @@ import 'package:voola/ui/views/settings/address_book/Sarm.dart';
 import 'package:voola/ui/views/settings/security/smartCard/SmartCardAttachModel.dart';
 import 'package:voola/ui/views/wallet/News.dart';
 import 'package:voola/ui/views/wallet/ReceiveScreen.dart';
+import 'package:voola/ui/views/wallet/transactions/foil/model.dart';
 
 import 'core/api/coingecko/CoingeckoAPI.dart';
 import 'core/api/network_fees/NetworkFeesApi.dart';
@@ -80,6 +81,7 @@ void setupLocator() {
   locator.registerFactory(() => BSCTransferModel());
   locator.registerFactory(() => BCTransferModel());
   locator.registerFactory(() => SOLTransferModel());
+  locator.registerFactory(() => FOILTransferModel());
 
   locator.registerFactory(() => SettingsMainModel());
   locator.registerFactory(() => TxHistoryModel());

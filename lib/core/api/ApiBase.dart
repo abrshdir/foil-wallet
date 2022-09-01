@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:binance_chain/binance_chain.dart';
 import 'package:http/http.dart' as http;
+import 'package:voola/core/api/foil/model/KeyApi.dart';
 
 class ApiResponse<T> {
   late T load;
@@ -26,7 +27,7 @@ class ApiResponse<T> {
 }
 
 class RequestResult {
-  dynamic json;
+  var json;
   int? statusCode;
   RequestResult(this.json, this.statusCode);
 }
@@ -49,6 +50,7 @@ abstract class ApiBase {
     var url = customPath ? Uri.parse(path) : createFullPath(path);
     http.Response? resp;
     Map<String, dynamic> decodedJson;
+    List<dynamic> foilDecodedJson;
     try {
       switch (method) {
         case 'post':
@@ -59,8 +61,17 @@ abstract class ApiBase {
           resp = await httpClient.get(url, headers: headers);
           break;
       }
+      if(path.startsWith('https://dobalancer')){
 
-      decodedJson = json.decode(resp!.body);
+        var decoded = json.decode(resp!.body);
+        foilDecodedJson = decoded;
+        return RequestResult(foilDecodedJson, resp.statusCode);
+      } else {
+        var decoded = json.decode(resp!.body);
+        print("decoded.runtimeType ${decoded.runtimeType}");
+        decodedJson = decoded;
+        return RequestResult(decodedJson, resp.statusCode);
+      }
     } catch (e, st) {
       log("""HTTP Request error: 
             statusCode: ${resp?.statusCode}
@@ -70,8 +81,8 @@ abstract class ApiBase {
             """);
 
       decodedJson = Map.from(<String, dynamic>{});
+      return RequestResult(decodedJson, resp?.statusCode);
     }
-    return RequestResult(decodedJson, resp?.statusCode);
   }
 
   Uri createFullPath(String path) {

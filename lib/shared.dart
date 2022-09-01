@@ -10,6 +10,7 @@ import 'package:voola/core/token/utils.dart';
 import 'package:voola/locator.dart';
 import 'package:voola/ui/views/wallet/transactions/binance_smart_chain/bsc_Transfer.dart';
 import 'package:voola/ui/views/wallet/transactions/ethereum/eth_Transfer.dart';
+import 'package:voola/ui/views/wallet/transactions/foil/foil_Transfer.dart';
 import 'package:web3dart/web3dart.dart';
 
 import 'core/balance/WalletBalance.dart';
@@ -63,6 +64,9 @@ void routeToTransfer(
           break;
         case TokenNetwork.Solana:
           result = SOLTransferScreen(tokenBalance, accountFrom);
+          break;
+        case TokenNetwork.Foil:
+          result = FOILTransferScreen(tokenBalance, accountFrom);
           break;
         default:
       }

@@ -1100,6 +1100,17 @@ class S {
     );
   }
 
+
+  /// `Foil coin PrivateKey`
+  String get foilPk {
+    return Intl.message(
+      'Foil PrivateKey',
+      name: 'foilPK',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `An important app update is available. To continue, you need to download and install it.`
   String get forceUpdate {
     return Intl.message(

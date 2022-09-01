@@ -5,6 +5,7 @@ import 'package:bip39/bip39.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:voola/core/api/foil/model/KeyApi.dart';
 import 'package:voola/core/authentication/AuthService.dart';
 import 'package:voola/locator.dart';
 import 'package:voola/shared.dart';
@@ -18,7 +19,6 @@ class RestoreWalletModel extends BaseViewModel {
   final mnemonicController = TextEditingController();
   final _authService = locator<AuthService>();
   bool addWallet = false;
-  final endpoint = 'http://10.0.2.2:5000/api/';
 
   void validateMnemonicAndNext(BuildContext context) async {
     setState(ViewState.Busy);
@@ -50,19 +50,14 @@ class RestoreWalletModel extends BaseViewModel {
 
 
   Future getWalletSeed(seed) async {
-    final url = 'http://10.0.2.2:5000/api/wallet/createWallet';
-    final body = {
-      "seed": seed.toString()
-    };
+    // print("mnemonic.toString(), ${mnemonic.toString()}");
+    final url = 'http://185.63.191.197:9088/addresses/makepairbyphrase';
+    final body = seed;
     try {
-      final response = await http.post(Uri.parse(url), body: body);
+      final response = await http.post(Uri.parse(url), body: body, headers: {"Content-Type": "plain/text; charset=utf-8"});
       final responseData = json.decode(response.body);
       print(responseData.toString());
-      if (response.statusCode == 200) {
-        return responseData;
-      } else {
-        return "";
-      }
+      return KeyApi.fromJson(responseData);
     } catch (error) {
       throw error;
     }
@@ -71,7 +66,7 @@ class RestoreWalletModel extends BaseViewModel {
   Future<void> restoreWallet(BuildContext context) async {
     var seed = await compute<String, Uint8List>(
         calculateSeedFromMnemonic, mnemonicController.text);
-    var foilKey = await getWalletSeed(seed);
+    var foilKey = await getWalletSeed(mnemonicController.text);
     await _authService.createNewAccount(mnemonicController.text, seed, foilKey);
     locator<WalletMainScreenModel>().loadBalances();
     //await locator<TBCCApi>().newClient(_authService.accManager.currentAccount.bcWallet.address);

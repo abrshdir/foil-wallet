@@ -18,11 +18,11 @@ class AppSettings {
     lastNewsId = json['last_news_id'] ?? 0;
     bc_rpc = json['bc_rpc'] ?? 'dex.binance.org/api';
     //bc_rpc = json['bc_env'] ?? 'ep0.tbcc.com/api';
-    bsc_rpc = json['bsc_rpc'] ?? 'https://bsc-dataseed1.defibit.io';
+    bsc_rpc = 'https://bsc-dataseed1.defibit.io';
     //bsc_rpc = 'https://epbal.tbcc.com';
-    eth_rpc = json['eth_rpc'] ?? 'https://mainnet.infura.io/v3/6548e442303c4fd0906cdbc6f78ea968';
+    eth_rpc = 'https://mainnet.infura.io/v3/6548e442303c4fd0906cdbc6f78ea968';
     //eth_rpc = 'https://ep1.tbcc.com';
-    eth_dapp_rpc = json['eth_dapp_rpc'] ?? 'https://mainnet.infura.io/v3/24a2a8ee9d3f4e35a18fbb02376cf768';
+    eth_dapp_rpc = 'https://mainnet.infura.io/v3/24a2a8ee9d3f4e35a18fbb02376cf768';
     sol_rpc = json['sol_rpc'] ?? 'https://api.mainnet-beta.solana.com';
   }
 

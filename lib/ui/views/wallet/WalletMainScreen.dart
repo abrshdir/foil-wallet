@@ -96,75 +96,72 @@ class _WalletMainScreenState extends State<WalletMainScreen> with AutomaticKeepA
                                 toolbarHeight: MediaQuery.of(context).size.height * 0.31,
                                 flexibleSpace: FlexibleSpaceBar(
                                   collapseMode: CollapseMode.pin,
-                                  background: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                                    child: Column(
-                                      children: [
-                                        AnimatedButtonBar([
-                                          ButtonBarEntry(
-                                            child: Text(
-                                              S.of(context).wallet,
-                                              style: 0 == model.barValue
-                                                  ? tt.bodyText2
-                                                  : tt.bodyText1!.copyWith(
-                                                      color: AppColors.text.withOpacity(0.7),
-                                                    ),
-                                            ),
-                                            onTap: () {
-                                              if (model.barValue != 0) {
-                                                model.barValue = 0;
-                                                model.setState();
-                                              }
-                                            },
-                                          ),
-                                          ButtonBarEntry(
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(S.of(context).news,
-                                                    style: 1 == model.barValue ? tt.bodyText2 : tt.bodyText1!.copyWith(color: AppColors.text.withOpacity(0.7))),
-                                                //if (locator<AppSettings>().lastNewsId != locator<UserSettings>().lastNewsRedId)
-                                                if (locator<AppSettings>().lottery)
-                                                  Container(
-                                                    width: 8,
-                                                    height: 8,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color: AppColors.active,
-                                                    ),
-                                                    margin: const EdgeInsets.only(
-                                                      bottom: 10,
-                                                      left: 4,
-                                                    ),
+                                  background: Column(
+                                    children: [
+                                      AnimatedButtonBar([
+                                        ButtonBarEntry(
+                                          child: Text(
+                                            S.of(context).wallet,
+                                            style: 0 == model.barValue
+                                                ? tt.bodyText2
+                                                : tt.bodyText1!.copyWith(
+                                                    color: AppColors.text.withOpacity(0.7),
                                                   ),
-                                              ],
-                                            ),
-                                            onTap: () {
-                                              if (model.barValue != 1) {
-                                                model.barValue = 1;
-                                                model.setState();
-                                              }
-                                            },
                                           ),
-                                        ]),
-                                        if (model.barValue == 0) ...[
-                                          if (model.manualRefresh)
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 10),
-                                              child: LinearProgressIndicator(),
-                                            ),
-                                          SizedBox(height: 14),
-                                          //cart
-                                          Showcase(
-                                            key: locator<MainScreenModel>().showcaseKeys['account_carousel'],
-                                            //key: locator<MainScreenModel>().showcaseKeys[0],
-                                            contentPadding: EdgeInsets.all(8.0),
-                                            description: 'Swipe to change account',
-                                            child: AccountCarousel(),
+                                          onTap: () {
+                                            if (model.barValue != 0) {
+                                              model.barValue = 0;
+                                              model.setState();
+                                            }
+                                          },
+                                        ),
+                                        ButtonBarEntry(
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(S.of(context).news,
+                                                  style: 1 == model.barValue ? tt.bodyText2 : tt.bodyText1!.copyWith(color: AppColors.text.withOpacity(0.7))),
+                                              //if (locator<AppSettings>().lastNewsId != locator<UserSettings>().lastNewsRedId)
+                                              if (locator<AppSettings>().lottery)
+                                                Container(
+                                                  width: 8,
+                                                  height: 8,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: AppColors.active,
+                                                  ),
+                                                  margin: const EdgeInsets.only(
+                                                    bottom: 10,
+                                                    left: 4,
+                                                  ),
+                                                ),
+                                            ],
                                           ),
-                                        ]
-                                      ],
-                                    ),
+                                          onTap: () {
+                                            if (model.barValue != 1) {
+                                              model.barValue = 1;
+                                              model.setState();
+                                            }
+                                          },
+                                        ),
+                                      ]),
+                                      if (model.barValue == 0) ...[
+                                        if (model.manualRefresh)
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 10),
+                                            child: LinearProgressIndicator(),
+                                          ),
+                                        SizedBox(height: 14),
+                                        //cart
+                                        Showcase(
+                                          key: locator<MainScreenModel>().showcaseKeys['account_carousel'],
+                                          //key: locator<MainScreenModel>().showcaseKeys[0],
+                                          contentPadding: EdgeInsets.all(8.0),
+                                          description: 'Swipe to change account',
+                                          child: AccountCarousel(),
+                                        ),
+                                      ]
+                                    ],
                                   ),
                                 ))
                           ];
@@ -489,8 +486,8 @@ class AccountCard extends StatelessWidget {
             padding: const EdgeInsets.all(26),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(32),
-              // gradient: AppColors.cardGradient,
-              color: Colors.red,
+              gradient: AppColors.cardGradient,
+              // color: Colors.red,
             ),
             child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               Text('${acc.accountAlias}', style: tt.bodyText1!.copyWith(color: AppColors.inactiveText)),
